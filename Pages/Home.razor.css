@@ -1339,3 +1339,84 @@ footer.home-footer {
         height: 15px;
     }
 }
+
+/* Header action links: keep both labels green and normally spaced in TR/EN. */
+.header-date .header-actions .settings-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    gap: 8px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    color: #35c979 !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-decoration: none !important;
+}
+
+.header-date .header-actions .settings-button span {
+    display: inline-block;
+    color: #35c979 !important;
+    font-size: 13px !important;
+    font-weight: 600;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.header-date .header-actions .settings-button:hover,
+.header-date .header-actions .settings-button:focus,
+.header-date .header-actions .settings-button:visited {
+    color: #35c979 !important;
+    text-decoration: none !important;
+}
+
+/* Keep Settings and Transactions side by side; do not wrap one over the other. */
+.header-date .header-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    width: max-content;
+    max-width: 100%;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .header-date {
+        align-items: flex-start;
+        width: 100%;
+        min-width: 0;
+        text-align: left;
+    }
+
+    .header-date .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    .header-date .header-actions .settings-button {
+        padding: 9px 11px;
+        font-size: 12px;
+    }
+
+    .header-date .header-actions .settings-button span {
+        font-size: 12px !important;
+    }
+
+    .header-date > span,
+    .header-date > strong {
+        align-self: flex-end;
+    }
+}
