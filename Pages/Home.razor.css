@@ -1313,10 +1313,29 @@ footer.home-footer {
         font-size: 11px;
     }
 }
-/* Keep the Transactions link green, normally spaced, and button-sized in both languages. */
 .header-date .transaction-nav-button span {
-    color: #35c979 !important;
-    font-size: inherit;
     letter-spacing: normal;
     word-spacing: normal;
+}
+
+/* Ayarlar bağlantısında platformdan bağımsız SVG simgesi */
+.settings-nav-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.settings-nav-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex: 0 0 auto;
+}
+
+@media (max-width: 600px) {
+    .settings-nav-icon {
+        width: 15px;
+        height: 15px;
+    }
 }

@@ -34,8 +34,15 @@ else
            <div class="header-date">
 
     <div class="header-actions">
-        <a href="settings" class="settings-button">
-            @L.T("⚙ Ayarlar", "⚙ Settings")
+        <a href="settings" class="settings-button settings-nav-button">
+            <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3.2" />
+                <circle cx="12" cy="12" r="7.2" />
+                <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.55 1.55M17.52 17.52l1.55 1.55M2 12h2.2M19.8 12H22M4.93 19.07l1.55-1.55M17.52 6.48l1.55-1.55" />
+            </svg>
+            <span>@L.T("Ayarlar", "Settings")</span>
         </a>
 
         <a href="transactions" class="settings-button transaction-nav-button">
@@ -727,10 +734,10 @@ private int DaysUntilPayment(DateTime date)
     {
         "Yemek" => L.T("Yemek", "Food"),
         "Market" => L.T("Market", "Groceries"),
-        "Ulaşım" or "UlaÅŸÄ±m" => L.T("Ulaşım", "Transport"),
-        "Eğlence" or "EÄŸlence" => L.T("Eğlence", "Entertainment"),
+        "Ulaşım" => L.T("Ulaşım", "Transport"),
+        "Eğlence" => L.T("Eğlence", "Entertainment"),
         "Faturalar" => L.T("Faturalar", "Bills"),
-        "Diğer" or "DiÄŸer" => L.T("Diğer", "Other"),
+        "Diğer" => L.T("Diğer", "Other"),
         _ => category
     };
 
