@@ -1,0 +1,114 @@
+name: Deploy Finansim to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up .NET 11
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 11.0.x
+
+      - name: Publish Blazor app
+        run: dotnet publish -c Release -p:CompressionEnabled=false
+
+      - name: Prepare app for GitHub Pages
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          site = Path("bin/Release/net11.0/publish/wwwroot")
+          index = site / "index.html"
+          if not index.exists():
+              raise SystemExit(f"Yayın klasörü bulunamadı: {index}")
+
+          html = index.read_text(encoding="utf-8")
+          html, count = re.subn(
+              r'<base\s+href="/"\s*/?>',
+              '<base href="/finansim/" />',
+              html,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit('index.html içinde <base href="/"> etiketi bulunamadı; yol ayarı yapılmadı.')
+
+          restore_script = '''\n<!-- Restore client-side routes on GitHub Pages -->
+          <script>
+          (function (l) {
+            if (l.search) {
+              var q = {};
+              l.search.slice(1).split('&').forEach(function (v) {
+                var a = v.split('=');
+                q[a[0]] = a.slice(1).join('=').replace(/~and~/g, '&');
+              });
+              if (q.p !== undefined) {
+                window.history.replaceState(null, null,
+                  l.pathname.slice(0, -1) + (q.p || '') +
+                  (q.q ? ('?' + q.q) : '') + l.hash);
+              }
+            }
+          }(window.location));
+          </script>
+          '''
+          html = html.replace("</head>", restore_script + "\n</head>", 1)
+          index.write_text(html, encoding="utf-8")
+
+          not_found = r'''<!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <title>Finansim</title>
+            <script>
+              // GitHub Pages SPA fallback for the /finansim project site.
+              var segmentCount = 1;
+              var l = window.location;
+              l.replace(
+                l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+                l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?p=/' +
+                l.pathname.slice(1).split('/').slice(segmentCount).join('/').replace(/&/g, '~and~') +
+                (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+                l.hash
+              );
+            </script>
+          </head>
+          <body></body>
+          </html>
+          '''
+          (site / "404.html").write_text(not_found, encoding="utf-8")
+          (site / ".nojekyll").write_text("", encoding="ascii")
+          print(f"GitHub Pages dosyaları hazır: {site}")
+          PY
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: bin/Release/net11.0/publish/wwwroot
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

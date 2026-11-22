@@ -1,0 +1,786 @@
+@page "/"
+@page "/routecheck"
+@using Finansim.Models
+@using Finansim.Services
+@using System.Globalization
+@inject Finansim.Services.StorageService Storage
+@inject Finansim.Services.FinanceService Finance
+@inject LocalizationService L
+
+<PageTitle>@L.T("Finansim - Ana Sayfa", "Finansim - Home")</PageTitle>
+
+@if (isLoading)
+{
+    <div class="home-loading">@L.T("Finansal bilgiler yükleniyor...", "Loading financial information...")</div>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="home-loading">
+        @errorMessage
+        <a href="/settings">@L.T("Ayarlara git", "Go to settings")</a>
+    </div>
+}
+else
+{
+    <div class="dashboard">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div>
+                <h1>Finans<span>ım.</span></h1>
+                <p>@L.T("Kişisel Finans Yönetimi", "Personal Finance Management")</p>
+            </div>
+
+           <div class="header-date">
+
+    <div class="header-actions">
+        <a href="/settings" class="settings-button">
+            @L.T("⚙ Ayarlar", "⚙ Settings")
+        </a>
+
+        <a href="/transactions" class="settings-button transaction-nav-button">
+            <svg class="transaction-nav-icon" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="5.5" y="2.5" width="13" height="19" rx="2" />
+                <rect x="8.5" y="5.5" width="7" height="3.2" rx="0.6" />
+                <path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.2" />
+            </svg>
+            <span>@L.T("İşlemler", "Transactions")</span>
+        </a>
+    </div>
+
+    <span>@L.T("BUGÜN", "TODAY")</span>
+    <strong>@DateTime.Now.ToString("dd MMMM yyyy", DisplayCulture)</strong>
+
+</div>
+        </header>
+
+<!-- FINANCIAL SUMMARY -->
+<section class="financial-summary">
+
+    <div class="financial-summary-main">
+
+        <div>
+            <p class="summary-eyebrow">@L.T("FİNANSAL ÖZETİN", "YOUR FINANCIAL SUMMARY")</p>
+            <h2>@L.T("Gelir-Gider Dengesi", "Income and Expense Balance")</h2>
+        </div>
+
+        <div class="summary-net">
+            <span>@L.T("AYLIK NET DENGE", "MONTHLY NET BALANCE")</span>
+
+            <strong class="@(MonthlyBalance >= 0 ? "positive" : "negative")">
+                @(MonthlyBalance > 0 ? "+" : "")@Money(MonthlyBalance)
+            </strong>
+        </div>
+
+    </div>
+
+    <div class="monthly-balance-breakdown">
+
+    <div class="monthly-balance-heading">
+        <h3>@L.T("Aylık Gelir-Gider Dengesi", "Monthly Income and Expenses")</h3>
+    </div>
+
+    <div class="monthly-comparison-labels">
+        <div class="monthly-comparison-label monthly-comparison-expense">
+            <span class="monthly-comparison-dot"></span>
+            <div>
+                <small>@L.T("Toplam Giden", "Total Outgoing")</small>
+                <strong class="negative">@Money(Finance.GetMonthlyExpenses(DateTime.Today))</strong>
+            </div>
+        </div>
+
+        <div class="monthly-comparison-label monthly-comparison-income">
+            <span class="monthly-comparison-dot"></span>
+            <div>
+                <small>@L.T("Toplam Gelen", "Total Incoming")</small>
+                <strong class="positive">@Money(Finance.GetMonthlyIncome(DateTime.Today))</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="monthly-comparison-track"
+         role="img"
+         aria-label='@L.T("Aylık gelir ve gider karşılaştırması. Gider solda, gelir sağda.", "Monthly income and expense comparison. Expenses on the left, income on the right.")'>
+        <div class="monthly-comparison-half monthly-comparison-left">
+            <div class="monthly-comparison-fill expense-fill"
+                 style="width: @BarWidth(Finance.GetMonthlyExpenses(DateTime.Today))"></div>
+        </div>
+        <div class="monthly-comparison-center"></div>
+        <div class="monthly-comparison-half monthly-comparison-right">
+            <div class="monthly-comparison-fill income-fill"
+                 style="width: @BarWidth(Finance.GetMonthlyIncome(DateTime.Today))"></div>
+        </div>
+    </div>
+
+    <div class="monthly-comparison-direction">
+        <span>← @L.T("Gider", "Expenses")</span>
+        <span>@L.T("Gelir", "Income") →</span>
+    </div>
+
+</div>
+
+<section class="summary-spending-plan">
+    <div class="summary-plan-heading">
+        <h3>@L.T("Bir Sonraki Hesap Kesimine Kadar", "Until the Next Statement Date")</h3>
+        <span>@L.T("Güvenli harcama ve birikim tahmini", "Safe spending and savings estimate")</span>
+    </div>
+
+    <div class="summary-plan-grid">
+        <div class="summary-plan-card summary-plan-date">
+            <span>@L.T("Hesap kesimine kalan", "Time until statement")</span>
+            @if (NextStatementDate is DateTime statementDate)
+            {
+                <strong>@DaysUntilStatement(statementDate) @L.T("gün", DaysUntilStatement(statementDate) == 1 ? "day" : "days")</strong>
+                <small>@statementDate.ToString("dd MMMM yyyy", DisplayCulture)</small>
+            }
+            else
+            {
+                <strong>—</strong>
+                <small>@L.T("Kart ayarlarından hesap kesim tarihi ekle", "Add a statement date in card settings")</small>
+            }
+        </div>
+
+        <div class="summary-plan-card summary-plan-total">
+            <span>@L.T("Güvenli harcama bütçen", "Your safe spending budget")</span>
+            <strong>@Money(SpendableUntilStatement)</strong>
+            <small>@L.T("Banka bakiyesi − minimum bakiyeler − mevcut kart borcu", "Bank balance − minimum balances − current card debt")</small>
+        </div>
+
+        <div class="summary-plan-card summary-plan-daily">
+            <span>@L.T("Günlük harcama limitin", "Your daily spending limit")</span>
+            @if (NextStatementDate.HasValue)
+            {
+                <strong>@Money(DailyStatementSpendingLimit)</strong>
+                <small>@L.T("Hesap kesimine kadar eşit günlük bütçe", "Equal daily budget until the statement date")</small>
+            }
+            else
+            {
+                <strong>—</strong>
+                <small>@L.T("Hesap kesim tarihi girildiğinde hesaplanır", "Calculated when a statement date is entered")</small>
+            }
+        </div>
+
+        <div class="summary-plan-card summary-plan-savings">
+            <span>@L.T("Birikime kalabilecek tutar", "Potential savings")</span>
+            @if (NextStatementDate.HasValue && HasRecentExpenseHistory)
+            {
+                <strong>@Money(EstimatedSavingsUntilStatement)</strong>
+                <small>@L.T("Son 30 günün günlük gider ortalamasına göre", "Based on average daily expenses over the last 30 days")</small>
+            }
+            else
+            {
+                <strong>—</strong>
+                <small>@L.T("Son 30 günde gider kaydı oluştukça tahmin edilir", "Estimated as expenses are recorded over the last 30 days")</small>
+            }
+        </div>
+    </div>
+
+    <p class="summary-plan-note">
+        @L.T("Tahmin; kullanılabilir banka bakiyesinden hesapların minimum bakiyeleri ve mevcut kredi kartı borçları ayrılarak hesaplanır. Kullanılmamış kredi kartı limiti nakit bütçeye eklenmez.", "The estimate subtracts minimum account balances and current credit card debt from your available bank balance. Unused credit card limit is not counted as cash.")
+    </p>
+</section>
+
+</section>
+        <!-- FINANCIAL CARDS -->
+        <section class="finance-grid">
+
+            <div class="finance-card bank-card">
+                <div class="card-heading">
+                    <span>@L.T("Banka Hesaplarım", "My Bank Accounts")</span>
+<span class="card-icon">
+    <svg class="card-icon-svg" viewBox="0 0 24 24" fill="none">
+        <path d="M3 9L12 4L21 9H3Z" />
+        <path d="M5 10V18M9 10V18M15 10V18M19 10V18" />
+        <path d="M3 20H21M2 22H22" />
+    </svg>
+</span>                </div>
+
+                <h2>@Money(Finance.GetBankBalance())</h2>
+                <p>@L.T("Kullanılabilir bakiye", "Available balance")</p>
+
+                <div class="card-footer">
+                    <span>●</span>
+                    @L.T("Minimum bakiye toplamı: ", "Total minimum balance: ")@Money(Finance.GetMinimumBankBalance())
+                </div>
+            </div>
+
+            <div class="finance-card credit-card">
+                <div class="card-heading">
+                    <span>@L.T("Kredi Kartlarım", "My Credit Cards")</span>
+<span class="card-icon">
+    <svg class="card-icon-svg" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="M3 10H21" />
+        <path d="M7 15H11" />
+    </svg>
+</span>                </div>
+
+                <h2>@Money(Finance.GetAvailableLimit())</h2>
+                <p>@L.T("Kullanılabilir limit", "Available credit")</p>
+
+                <div class="card-footer">
+                    <span>●</span>
+                    @L.T("Toplam limit: ", "Total limit: ")@Money(Finance.GetTotalCreditCardLimit())
+                </div>
+            </div>
+
+            <div class="finance-card income-card">
+                <div class="card-heading">
+                   <span>@L.T("Toplam Gelen", "Total Income")</span>
+<span class="card-icon">
+    <svg class="card-icon-svg" viewBox="0 0 24 24" fill="none">
+        <path d="M3 18L8 12L12 15L21 5" />
+        <path d="M14 5H21V12" />
+    </svg>
+</span>                </div>
+
+                <h2>@Money(Finance.GetMonthlyIncome(DateTime.Today))</h2>
+                <p>@L.T("Bu ay gelen para", "Income received this month")</p>
+
+                <div class="card-footer">@L.T("Bu ay", "This month")</div>
+            </div>
+
+            <div class="finance-card expense-card">
+                <div class="card-heading">
+                    <span>@L.T("Toplam Harcamalar", "Total Expenses")</span>
+<span class="card-icon">
+    <svg class="card-icon-svg" viewBox="0 0 24 24" fill="none">
+        <path d="M3 5L8 11L12 8L21 19" />
+        <path d="M14 19H21V12" />
+    </svg>
+</span>                </div>
+
+                <h2>@Money(Finance.GetMonthlyExpenses(DateTime.Today))</h2>
+                <p>@L.T("Bu ay yapılan harcamalar", "Expenses this month")</p>
+
+                <div class="card-footer">@L.T("Bu ay", "This month")</div>
+            </div>
+
+        </section>
+
+<!-- INDIVIDUAL BANK ACCOUNTS AND CREDIT CARDS -->
+<section class="section home-account-overview">
+
+    <div class="section-title">
+        <div>
+            <h3>@L.T("Hesap ve Kart Detayları", "Account and Card Details")</h3>
+            <p>@L.T("Banka hesaplarını ve kredi kartlarını ayrı ayrı görüntüle", "View each bank account and credit card separately")</p>
+        </div>
+    </div>
+
+    <div class="home-account-grid">
+
+        <div class="home-account-panel bank-accounts-panel">
+            <div class="home-account-panel-heading">
+                <div>
+                    <h4>@L.T("Banka Hesaplarım", "My Bank Accounts")</h4>
+                    <span>@_settings.BankAccounts.Count @L.T("hesap", _settings.BankAccounts.Count == 1 ? "account" : "accounts")</span>
+                </div>
+                <div class="home-account-total bank-total">
+                    <strong>@Money(Finance.GetBankBalance())</strong>
+                    <small>@L.T("Toplam bakiye", "Total balance")</small>
+                </div>
+            </div>
+
+            <div class="home-account-list">
+                @foreach (var account in _settings.BankAccounts)
+                {
+                    <div class="home-account-item" @key="account.Id">
+                        <span class="home-account-icon bank-account-icon">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M3 9L12 4L21 9H3Z" />
+                                <path d="M5 10V18M9 10V18M15 10V18M19 10V18" />
+                                <path d="M3 20H21M2 22H22" />
+                            </svg>
+                        </span>
+                        <div class="home-account-details">
+                            <strong>@account.AccountName</strong>
+                            <span>@L.T("Minimum bakiye: ", "Minimum balance: ")@Money(account.MinimumBalance)</span>
+                        </div>
+                        <div class="home-account-value bank-account-value">
+                            <strong>@Money(Finance.GetBankBalance(account.Id))</strong>
+                            <small>@L.T("Güncel bakiye", "Current balance")</small>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="home-account-panel credit-cards-panel">
+            <div class="home-account-panel-heading">
+                <div>
+                    <h4>@L.T("Kredi Kartlarım", "My Credit Cards")</h4>
+                    <span>@_settings.CreditCards.Count @L.T("kart", _settings.CreditCards.Count == 1 ? "card" : "cards")</span>
+                </div>
+                <div class="home-account-total card-total">
+                    <strong>@Money(Finance.GetCreditCardDebt())</strong>
+                    <small>@L.T("Toplam borç", "Total debt")</small>
+                </div>
+            </div>
+
+            <div class="home-account-list">
+                @foreach (var card in _settings.CreditCards)
+                {
+                    <div class="home-account-item" @key="card.Id">
+                        <span class="home-account-icon credit-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <rect x="3" y="5" width="18" height="14" rx="2" />
+                                <path d="M3 10H21M7 15H11" />
+                            </svg>
+                        </span>
+                        <div class="home-account-details credit-card-details">
+                            <strong>@card.CardName</strong>
+                            <span>@L.T("Borç: ", "Debt: ")@Money(Finance.GetCreditCardDebt(card.Id)) @L.T("/ Limit: ", "/ Limit: ")@Money(card.TotalLimit)</span>
+                            <div class="home-card-usage-track" aria-label='@L.T("Kart limit kullanım oranı", "Card limit usage")'>
+                                <div class="home-card-usage-fill" style="width: @CreditCardUsageWidth(card)"></div>
+                            </div>
+                        </div>
+                        <div class="home-account-value card-account-value">
+                            <strong>@Money(Finance.GetAvailableLimit(card.Id))</strong>
+                            <small>@L.T("Kullanılabilir", "Available")</small>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- DAILY BUDGET -->
+<section class="section">
+
+    <div class="section-title">
+        <div>
+            <h3>@L.T("Harcama Kontrolü", "Spending Overview")</h3>
+            <p>@L.T("Günlük ve dönemsel harcama durumun", "Your daily and period-based spending")</p>
+        </div>
+    </div>
+
+    <div class="budget-grid">
+
+        <div class="budget-card daily-card">
+            <div class="budget-icon">◷</div>
+            <p>@L.T("Bugünkü Harcamam", "Spent Today")</p>
+            <h2>@Money(Finance.GetDailyExpenses(DateTime.Today))</h2>
+            <span>@L.T("Bugün yaptığın harcamalar", "Your spending today")</span>
+        </div>
+
+        <div class="budget-card remaining-card">
+<div class="budget-icon">
+    <svg class="budget-icon-svg" viewBox="0 0 32 32" fill="none">
+        <rect x="3" y="5" width="23" height="22" rx="3"/>
+        <path d="M9 3V8M20 3V8M3 12H26"/>
+        <circle cx="23" cy="23" r="7" fill="#1c2024"/>
+        <path d="M23 19V23L26 25"/>
+    </svg>
+</div>            <p>@L.T("Son Ödeme Tarihine Kadar", "Until the Payment Due Date")</p>
+
+            @if (NextPaymentDate is DateTime paymentDate)
+            {
+                <h2>@DaysUntilPayment(paymentDate) @L.T("gün", DaysUntilPayment(paymentDate) == 1 ? "day" : "days")</h2>
+                <span>
+                    @L.T("Son ödeme tarihi:", "Payment due date:")
+                    @paymentDate.ToString("dd MMMM yyyy", DisplayCulture)
+                </span>
+            }
+            else
+            {
+                <h2>@L.T("Belirlenmedi", "Not set")</h2>
+                <span>@L.T("Ayarlar sayfasından son ödeme gününü gir.", "Enter the payment due date in Settings.")</span>
+            }
+        </div>
+
+        <div class="budget-card spendable-card">
+            <div class="budget-icon">₺</div>
+            <p>@L.T("Günlük Harcanabilir Tutar", "Daily Spendable Amount")</p>
+            <h2>@Money(DailySpendableAmount)</h2>
+            <span>@L.T("Son ödeme tarihine kadar günlük harcayabileceğin tutar", "Amount you can spend each day until the payment due date")</span>
+        </div>
+
+    </div>
+
+</section>
+        <!-- SAVINGS -->
+        <section class="section">
+
+            <div class="section-title">
+                <div>
+                    <h3>@L.T("Birikim Durumum", "My Savings")</h3>
+                    <p>@L.T("Hedeflerine ne kadar yaklaştın?", "How close are you to your goals?")</p>
+                </div>
+            </div>
+
+            <div class="savings-grid">
+
+                <div class="savings-card">
+                    <div class="savings-heading">
+                        <span>@L.T("Mevcut Birikimim", "Current Savings")</span>
+<span class="savings-icon yellow">
+    <svg class="savings-icon-svg" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="19"
+                stroke="currentColor" stroke-width="2.5"/>
+<circle cx="24" cy="24" r="9"            
+    stroke="currentColor" stroke-width="1.4"
+                opacity="0.7"/>
+<path d="M16 15L20 12"
+              stroke="currentColor" stroke-width="2"
+              stroke-linecap="round"/>
+    </svg>
+</span>
+</div>
+
+                    <h2>@Money(Finance.GetSavings())</h2>
+                    <p>@L.T("Şu ana kadar biriktirdiğin", "Saved so far")</p>
+                </div>
+
+                <div class="savings-card">
+                    <div class="savings-heading">
+                        <span>@L.T("Birikim Hedefim", "Savings Goal")</span>
+<span class="savings-icon purple">
+    <svg class="savings-icon-svg" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="19"/>
+        <circle cx="24" cy="24" r="13"/>
+        <circle cx="24" cy="24" r="7"/>
+        <circle cx="24" cy="24" r="2.5" fill="currentColor"/>
+    </svg>
+</span>
+                  </div>
+
+                    <h2>@Money(Finance.GetSavingsTarget())</h2>
+
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-value"
+                                 style="width: @ProgressWidth">
+                            </div>
+                        </div>
+
+                        <span>%@SavingsProgress.ToString("0.#", DisplayCulture) @L.T("tamamlandı", "completed")</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- TRANSACTIONS -->
+        <section class="section">
+
+            <div class="section-title">
+                <div>
+                    <h3>@L.T("Son İşlemler", "Recent Transactions")</h3>
+                    <p>@L.T("Son finansal hareketlerin", "Your latest financial activity")</p>
+                </div>
+            </div>
+
+            <div class="transactions">
+
+                @if (!Finance.Transactions.Any())
+                {
+                    <div class="transaction">
+                        <div class="transaction-info">
+                            <strong>@L.T("Henüz işlem bulunmuyor.", "No transactions yet.")</strong>
+                            <span>@L.T("İşlem eklemeye başladığında burada göreceksin.", "Your transactions will appear here when you add them.")</span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var transaction in Finance.Transactions
+                        .OrderByDescending(x => x.Date)
+                        .Take(3))
+                    {
+<div class="transaction @(IsPositive(transaction) ? "transaction-income" : "transaction-expense")">
+
+<div class="transaction-icon @(IsPositive(transaction) ? "income" : "expense")">                                @TransactionIcon(transaction)
+                            </div>
+
+                            <div class="transaction-info">
+                                <strong>@TransactionTitle(transaction)</strong>
+                                <span>@TransactionSubtitle(transaction)</span>
+                            </div>
+
+                            <strong class="@(IsPositive(transaction) ? "positive" : "negative")">
+                                @(IsPositive(transaction) ? "+" : "-")@Money(transaction.Amount)
+                            </strong>
+
+                        </div>
+                    }
+                }
+
+            </div>
+
+        </section>
+
+        <footer class="home-footer">
+            <div class="home-footer-copy">
+                <span>Finansım.</span> @L.T("Kişisel finansın, kendi kontrolünde.", "Your finances, in your control.")
+            </div>
+
+            <div class="home-language-picker" role="group" aria-label='@L.T("Dil seçimi", "Language selection")'>
+                <button type="button" class="language-option @(L.IsEnglish ? "" : "active")"
+                        aria-pressed="@(!L.IsEnglish)" @onclick='() => SelectLanguageAsync("tr")'>TR</button>
+                <span class="language-divider" aria-hidden="true">|</span>
+                <button type="button" class="language-option @(L.IsEnglish ? "active" : "")"
+                        aria-pressed="@L.IsEnglish" @onclick='() => SelectLanguageAsync("en")'>EN</button>
+            </div>
+        </footer>
+
+    </div>
+}
+
+@code {
+private FinanceSettings _settings = new();
+
+private decimal MonthlyBalance =>
+    Finance.GetMonthlyIncome(DateTime.Today)
+    - Finance.GetMonthlyExpenses(DateTime.Today);
+
+private string BarWidth(decimal amount)
+{
+    decimal income = Finance.GetMonthlyIncome(DateTime.Today);
+    decimal expenses = Finance.GetMonthlyExpenses(DateTime.Today);
+
+    decimal maximum = Math.Max(income, expenses);
+
+    if (maximum <= 0)
+        return "0%";
+
+    return (amount / maximum * 100)
+        .ToString("0.##", CultureInfo.InvariantCulture) + "%";
+}
+
+    private bool isLoading = true;
+    private string errorMessage = "";
+
+    private CultureInfo DisplayCulture => CultureInfo.GetCultureInfo(L.IsEnglish ? "en-US" : "tr-TR");
+
+    private async Task SelectLanguageAsync(string language)
+    {
+        await L.SetLanguageAsync(language);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await L.InitializeAsync();
+        try
+        {
+            var savedSettings =
+                await Storage.LoadAsync<FinanceSettings>("finance-settings");
+
+            if (savedSettings != null)
+            {
+                _settings = savedSettings;
+            }
+
+            FinanceService.NormalizeSettings(_settings);
+            Finance.Configure(_settings);
+            await Finance.InitializeAsync();
+        }
+        catch
+        {
+            errorMessage = L.T("Finansal bilgiler yüklenemedi. Tekrar deneyin.", "Could not load financial information. Please try again.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+private decimal DailySpendableAmount
+{
+    get
+    {
+        if (NextPaymentDate is not DateTime paymentDate)
+            return 0;
+
+        int remainingDays = Math.Max(
+            1,
+            (paymentDate.Date - DateTime.Today).Days + 1
+        );
+
+        decimal availableMoney =
+            Finance.GetBankBalance()
+            - Finance.GetMinimumBankBalance()
+            - Finance.GetCreditCardDebt();
+
+        return Math.Max(0, availableMoney / remainingDays);
+    }
+}
+
+    private DateTime? NextStatementDate
+    {
+        get
+        {
+            DateTime today = DateTime.Today;
+            var upcomingDates = new List<DateTime>();
+
+            foreach (var card in _settings.CreditCards)
+            {
+                int statementDay = card.StatementDate?.Day ?? card.StatementDay;
+                if (statementDay < 1 || statementDay > 31)
+                    continue;
+
+                int dayThisMonth = Math.Min(
+                    statementDay,
+                    DateTime.DaysInMonth(today.Year, today.Month));
+
+                DateTime candidate = new(today.Year, today.Month, dayThisMonth);
+
+                if (candidate < today)
+                {
+                    DateTime nextMonth = today.AddMonths(1);
+                    int dayNextMonth = Math.Min(
+                        statementDay,
+                        DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                    candidate = new DateTime(nextMonth.Year, nextMonth.Month, dayNextMonth);
+                }
+
+                upcomingDates.Add(candidate);
+            }
+
+            return upcomingDates.Count == 0 ? null : upcomingDates.Min();
+        }
+    }
+
+    private int DaysUntilStatement(DateTime date) =>
+        Math.Max(1, (date.Date - DateTime.Today).Days + 1);
+
+    // Bu tutar nakit bütçesidir: minimum hesap bakiyeleri ve mevcut kart borcu ayrılır.
+    // Kullanılmamış kart limiti nakit gibi sayılmaz.
+    private decimal SpendableUntilStatement => Math.Max(
+        0m,
+        Finance.GetBankBalance()
+        - Finance.GetMinimumBankBalance()
+        - Finance.GetCreditCardDebt());
+
+    private decimal DailyStatementSpendingLimit =>
+        NextStatementDate is DateTime date
+            ? SpendableUntilStatement / DaysUntilStatement(date)
+            : 0m;
+
+    private bool HasRecentExpenseHistory => Finance.Transactions.Any(x =>
+        x.Type == TransactionType.Expense &&
+        x.Date.Date >= DateTime.Today.AddDays(-29) &&
+        x.Date.Date <= DateTime.Today);
+
+    private decimal AverageDailyExpensesLast30Days =>
+        Finance.Transactions
+            .Where(x => x.Type == TransactionType.Expense &&
+                        x.Date.Date >= DateTime.Today.AddDays(-29) &&
+                        x.Date.Date <= DateTime.Today)
+            .Sum(x => x.Amount) / 30m;
+
+    private decimal EstimatedSavingsUntilStatement =>
+        NextStatementDate is DateTime date
+            ? Math.Max(0m, SpendableUntilStatement -
+                (AverageDailyExpensesLast30Days * DaysUntilStatement(date)))
+            : 0m;
+    private string CreditCardUsageWidth(CreditCard card)
+    {
+        if (card.TotalLimit <= 0)
+            return "0%";
+
+        decimal usage = Math.Clamp(
+            Finance.GetCreditCardDebt(card.Id) / card.TotalLimit * 100m,
+            0m,
+            100m);
+
+        return usage.ToString("0.##", CultureInfo.InvariantCulture) + "%";
+    }
+
+    private string Money(decimal amount)
+    {
+        return amount.ToString("N2", DisplayCulture) + " ₺";
+    }
+
+    private decimal SavingsProgress
+    {
+        get
+        {
+            decimal target = Finance.GetSavingsTarget();
+
+            if (target <= 0)
+                return 0;
+
+            return Math.Clamp(
+                Finance.GetSavings() / target * 100,
+                0,
+                100
+            );
+        }
+    }
+
+    private string ProgressWidth =>
+        SavingsProgress.ToString("0.##", CultureInfo.InvariantCulture) + "%";
+
+    private DateTime? NextPaymentDate => Finance.GetNextPaymentDate();
+
+private int DaysUntilPayment(DateTime date)
+{
+    return (date.Date - DateTime.Today).Days;
+}
+
+    private string CategoryLabel(string category) => category switch
+    {
+        "Yemek" => L.T("Yemek", "Food"),
+        "Market" => L.T("Market", "Groceries"),
+        "Ulaşım" => L.T("Ulaşım", "Transport"),
+        "Eğlence" => L.T("Eğlence", "Entertainment"),
+        "Faturalar" => L.T("Faturalar", "Bills"),
+        "Diğer" => L.T("Diğer", "Other"),
+        _ => category
+    };
+
+    private string TransactionTitle(Transaction transaction)
+    {
+        return transaction.Type switch
+        {
+            TransactionType.Income => L.T("Para Girişi", "Income"),
+            TransactionType.Expense =>
+                string.IsNullOrWhiteSpace(transaction.Description)
+                    ? CategoryLabel(transaction.Category)
+                    : transaction.Description,
+            TransactionType.CreditCardPayment => L.T("Kredi Kartı Ödemesi", "Credit Card Payment"),
+            TransactionType.SavingsContribution => L.T("Birikim Aktarımı", "Savings Contribution"),
+            TransactionType.SavingsWithdrawal => L.T("Birikim Çekimi", "Savings Withdrawal"),
+            _ => transaction.Description
+        };
+    }
+
+    private string TransactionSubtitle(Transaction transaction)
+    {
+        string date = transaction.Date.ToString(
+            "dd MMMM HH:mm",
+            DisplayCulture
+        );
+
+        string method = transaction.PaymentMethod ==
+            PaymentMethod.CreditCard
+                ? L.T("Kredi Kartı", "Credit Card")
+                : L.T("Banka Hesabı", "Bank Account");
+
+        return $"{date} · {method}";
+    }
+
+    private bool IsPositive(Transaction transaction)
+    {
+        return transaction.Type == TransactionType.Income ||
+               transaction.Type == TransactionType.SavingsWithdrawal;
+    }
+
+    private string TransactionIcon(Transaction transaction)
+    {
+        return transaction.Type switch
+        {
+            TransactionType.Income => "↗",
+            TransactionType.Expense => "↘",
+            TransactionType.CreditCardPayment => "▣",
+            TransactionType.SavingsContribution => "◎",
+            TransactionType.SavingsWithdrawal => "↗",
+            _ => "₺"
+        };
+    }
+}

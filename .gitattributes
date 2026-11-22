@@ -1,0 +1,2 @@
+# Preserve JavaScript file bytes so Blazor's published integrity hashes remain valid.
+*.js binary

@@ -1,0 +1,698 @@
+@page "/settings"
+@using Finansim.Models
+@using Finansim.Services
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Text.Json
+@inject Finansim.Services.StorageService Storage
+@inject Finansim.Services.FinanceService Finance
+@inject LocalizationService L
+
+<PageTitle>@L.T("Finansal Ayarlar - Finansim", "Financial Settings - Finansim")</PageTitle>
+
+<div class="settings-page">
+    <div class="settings-header">
+<a href="/" class="back-link">
+    <svg viewBox="0 0 24 24"
+         width="18"
+         height="18"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="1.8"
+         stroke-linecap="round"
+         stroke-linejoin="round">
+        <path d="M19 12H5" />
+        <path d="M12 19L5 12L12 5" />
+    </svg>
+    @L.T("Ana Sayfa", "Home")
+</a>        <h1>@L.T("Finansal Ayarlar", "Financial Settings")</h1>
+        <p>@L.T("Banka hesaplarını, kredi kartlarını ve birikim hedefini buradan yönetebilirsin.", "Manage your bank accounts, credit cards, and savings goal here.")</p>
+    </div>
+
+    @if (isLoading)
+    {
+        <p class="loading">@L.T("Ayarlar yükleniyor...", "Loading settings...")</p>
+    }
+    else
+    {
+        <EditForm Model="@settings" OnSubmit="@SaveSettings">
+            <section class="settings-section">
+                <div class="settings-title bank-title">
+                    <span>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9L12 4L21 9H3Z" />
+                            <path d="M5 10V18M9 10V18M15 10V18M19 10V18" />
+                            <path d="M3 20H21M2 22H22" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h2>@L.T("Banka Hesaplarım", "My Bank Accounts")</h2>
+                        <p>@L.T("Birden fazla banka hesabı ekleyebilir ve ayrı ayrı yönetebilirsin.", "Add multiple bank accounts and manage them separately.")</p>
+                    </div>
+                </div>
+
+                @foreach (var account in settings.BankAccounts)
+                {
+                    <div class="settings-item" @key="account.Id">
+                        <div class="settings-item-header">
+                            <div>
+                                <h3>@(string.IsNullOrWhiteSpace(account.AccountName) ? L.T("Banka Hesabı", "Bank Account") : account.AccountName)</h3>
+                                <span class="settings-current-value">@L.T("Güncel bakiye: ", "Current balance: ")@(Finance.GetBankBalance(account.Id).ToString("N2")) ₺</span>
+                            </div>
+                            <button type="button" class="remove-item-button" @onclick="() => RemoveBankAccount(account.Id)" disabled="@(settings.BankAccounts.Count <= 1)">
+                                @L.T("Hesabı Sil", "Remove Account")
+                            </button>
+                        </div>
+
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label>@L.T("Hesap adı", "Account Name")</label>
+                                <InputText @bind-Value="account.AccountName" class="form-input" placeholder='@L.T("Örn. Ziraat Vadesiz", "e.g. Main Checking")' />
+                            </div>
+                            <div class="form-group">
+                                <label>@L.T("Başlangıç bakiyesi (TL)", "Starting Balance (TRY)")</label>
+                                <InputNumber @bind-Value="account.InitialBalance" class="form-input" />
+                            </div>
+                            <div class="form-group">
+                                <label>@L.T("Minimum bakiye (TL)", "Minimum Balance (TRY)")</label>
+                                <InputNumber @bind-Value="account.MinimumBalance" class="form-input" />
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <button type="button" class="add-item-button bank-add-button" @onclick="AddBankAccount">
+                    + @L.T("Banka Hesabı Ekle", "Add Bank Account")
+                </button>
+            </section>
+
+            <section class="settings-section">
+                <div class="settings-title card-title">
+                    <span>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="5" width="18" height="14" rx="2" />
+                            <path d="M3 10H21" />
+                            <path d="M7 15H11" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h2>@L.T("Kredi Kartlarım", "My Credit Cards")</h2>
+                        <p>@L.T("Her kartın limitini, borcunu ve ödeme tarihlerini ayrı ayrı takip et.", "Track each card’s limit, balance, and payment dates separately.")</p>
+                    </div>
+                </div>
+
+                @foreach (var card in settings.CreditCards)
+                {
+                    <div class="settings-item" @key="card.Id">
+                        <div class="settings-item-header">
+                            <div>
+                                <h3>@(string.IsNullOrWhiteSpace(card.CardName) ? L.T("Kredi Kartı", "Credit Card") : card.CardName)</h3>
+                                <span class="settings-current-value">@L.T("Borç: ", "Debt: ")@(Finance.GetCreditCardDebt(card.Id).ToString("N2")) ₺ · @L.T("Kullanılabilir: ", "Available: ")@(Finance.GetAvailableLimit(card.Id).ToString("N2")) ₺</span>
+                            </div>
+                            <button type="button" class="remove-item-button" @onclick="() => RemoveCreditCard(card.Id)" disabled="@(settings.CreditCards.Count <= 1)">
+                                @L.T("Kartı Sil", "Remove Card")
+                            </button>
+                        </div>
+
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label>@L.T("Kart adı", "Card Name")</label>
+                                <InputText @bind-Value="card.CardName" class="form-input" placeholder='@L.T("Örn. Bonus", "e.g. Rewards Card")' />
+                            </div>
+                            <div class="form-group">
+                                <label>@L.T("Toplam kart limiti (TL)", "Total Card Limit (TRY)")</label>
+                                <InputNumber @bind-Value="card.TotalLimit" class="form-input" />
+                            </div>
+                            <div class="form-group">
+                                <label>@L.T("Başlangıç kart borcu (TL)", "Starting Card Debt (TRY)")</label>
+                                <InputNumber @bind-Value="card.InitialDebt" class="form-input" />
+                            </div>
+                            <div class="form-group">
+                                <label>@L.T("Hesap kesim tarihi", "Statement Date")</label>
+                                <InputDate @bind-Value="card.StatementDate" class="form-input" />
+                            </div>
+                            <div class="form-group">
+                                <label>@L.T("Son ödeme tarihi", "Payment Due Date")</label>
+                                <InputDate @bind-Value="card.PaymentDate" class="form-input" />
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <button type="button" class="add-item-button card-add-button" @onclick="AddCreditCard">
+                    + @L.T("Kredi Kartı Ekle", "Add Credit Card")
+                </button>
+            </section>
+
+            <section class="settings-section">
+                <div class="settings-title savings-title">
+                    <span>
+                        <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <circle cx="24" cy="24" r="19" />
+                            <circle cx="24" cy="24" r="13" />
+                            <circle cx="24" cy="24" r="7" />
+                            <circle cx="24" cy="24" r="2.5" fill="currentColor" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h2>@L.T("Birikim Hedefim", "My Savings Goal")</h2>
+                        <p>@L.T("Birikim planını belirle", "Set your savings plan")</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>@L.T("Mevcut birikimim (TL)", "Current Savings (TRY)")</label>
+                    <InputNumber @bind-Value="settings.CurrentSavings" class="form-input" />
+                </div>
+                <div class="form-group">
+                    <label>@L.T("Ulaşmak istediğim hedef (TL)", "Target Savings (TRY)")</label>
+                    <InputNumber @bind-Value="settings.SavingsTarget" class="form-input" />
+                </div>
+            </section>
+
+            @if (!string.IsNullOrWhiteSpace(errorMessage))
+            {
+                <div class="error-message">@errorMessage</div>
+            }
+
+            @if (saved)
+            {
+                <div class="success-message">✓ @L.T("Finansal bilgilerin başarıyla kaydedildi.", "Your financial settings were saved successfully.")</div>
+            }
+
+            <button type="submit" class="save-button">@L.T("Değişiklikleri Kaydet", "Save Changes")</button>
+        </EditForm>
+
+        <section class="settings-section backup-section">
+            <div class="settings-title backup-title">
+                <span>
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 16V3" />
+                        <path d="m7 8 5-5 5 5" />
+                        <path d="M4 14v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" />
+                    </svg>
+                </span>
+                <div>
+                    <h2>@L.T("Veri Yedekleme", "Data Backup")</h2>
+                    <p>@L.T("Banka hesaplarını, kartlarını, işlemlerini ve ayarlarını tek dosyada sakla. Yedek dosyası şifrelenmez; güvenli bir yerde tut.", "Save your accounts, cards, transactions, and settings in one file. The backup is not encrypted; keep it somewhere safe.")</p>
+                </div>
+            </div>
+
+            <div class="backup-grid">
+                <div class="backup-card">
+                    <div class="backup-card-heading">
+                        <span class="backup-card-icon backup-download-icon">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 3v12" />
+                                <path d="m7 10 5 5 5-5" />
+                                <path d="M4 17v3h16v-3" />
+                            </svg>
+                        </span>
+                        <div>
+                            <h3>@L.T("Yedek oluştur", "Create a Backup")</h3>
+                            <p>@L.T("Finansal verilerini JSON dosyası olarak cihazına indir.", "Download your financial data to your device as a JSON file.")</p>
+                        </div>
+                    </div>
+                    <button type="button" class="backup-action-button backup-create-button" @onclick="CreateBackupAsync" disabled="@isBackupBusy">
+                        @(isBackupBusy ? L.T("İşleniyor...", "Processing...") : L.T("Yedek Oluştur ve İndir", "Create and Download Backup"))
+                    </button>
+                </div>
+
+                <div class="backup-card">
+                    <div class="backup-card-heading">
+                        <span class="backup-card-icon backup-restore-icon">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M20 11a8 8 0 0 0-14.9-3L3 11" />
+                                <path d="M3 5v6h6" />
+                                <path d="M4 13a8 8 0 0 0 14.9 3L21 13" />
+                                <path d="M21 19v-6h-6" />
+                            </svg>
+                        </span>
+                        <div>
+                            <h3>@L.T("Yedeği geri yükle", "Restore a Backup")</h3>
+                            <p>@L.T("Daha önce Finansım'dan indirdiğin JSON yedeğini seç.", "Select a JSON backup previously downloaded from Finansim.")</p>
+                        </div>
+                    </div>
+                    <InputFile OnChange="OnBackupFileSelected" accept=".json,application/json" class="backup-file-input" disabled="@isBackupBusy" />
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(backupError))
+            {
+                <div class="backup-feedback backup-error">@backupError</div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(backupMessage))
+            {
+                <div class="backup-feedback backup-success">@backupMessage</div>
+            }
+
+            @if (pendingBackupData is not null && pendingBackupSettings is not null)
+            {
+                <div class="restore-confirmation">
+                    <div>
+                        <strong>@L.T("Yedek dosyası doğrulandı", "Backup file verified")</strong>
+                        <p>@pendingBackupFileName</p>
+                        <small>
+                            @pendingBankCount @L.T("banka hesabı", pendingBankCount == 1 ? "bank account" : "bank accounts") · @pendingCardCount @L.T("kredi kartı", pendingCardCount == 1 ? "credit card" : "credit cards") · @pendingTransactionCount @L.T("işlem", pendingTransactionCount == 1 ? "transaction" : "transactions")
+                            @if (!string.IsNullOrWhiteSpace(pendingBackupDate))
+                            {
+                                <text> · @L.T("Oluşturulma: ", "Created: ")@pendingBackupDate</text>
+                            }
+                        </small>
+                    </div>
+                    <div class="restore-warning">
+                        @L.T("Dikkat: Geri yükleme, bu cihazdaki mevcut Finansım verilerinin tamamının yerine geçer. Devam etmeden önce mevcut verilerini yedeklemeni öneririz.", "Warning: Restoring will replace all existing Finansim data on this device. We recommend backing up your current data before continuing.")
+                    </div>
+                    <div class="backup-confirm-buttons">
+                        <button type="button" class="backup-action-button restore-confirm-button" @onclick="RestoreBackupAsync" disabled="@isBackupBusy">
+                            @(isBackupBusy ? L.T("Geri yükleniyor...", "Restoring...") : L.T("Onayla ve Geri Yükle", "Confirm and Restore"))
+                        </button>
+                        <button type="button" class="backup-action-button restore-cancel-button" @onclick="CancelRestore">
+                            @L.T("Vazgeç", "Cancel")
+                        </button>
+                    </div>
+                </div>
+            }
+        </section>
+    }
+</div>
+
+@code {
+    private const long MaxBackupFileSize = 10 * 1024 * 1024;
+    private static readonly JsonSerializerOptions BackupJsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    private FinanceSettings settings = new();
+    private bool isLoading = true;
+    private bool saved;
+    private string errorMessage = "";
+
+    private bool isBackupBusy;
+    private string backupMessage = "";
+    private string backupError = "";
+    private Dictionary<string, string>? pendingBackupData;
+    private FinanceSettings? pendingBackupSettings;
+    private string pendingBackupFileName = "";
+    private string? pendingBackupDate;
+    private int pendingBankCount;
+    private int pendingCardCount;
+    private int pendingTransactionCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await L.InitializeAsync();
+        try
+        {
+            settings = await Storage.LoadAsync<FinanceSettings>("finance-settings") ?? new FinanceSettings();
+            FinanceService.NormalizeSettings(settings);
+            Finance.Configure(settings);
+            await Finance.InitializeAsync();
+        }
+        catch
+        {
+            errorMessage = L.T("Ayarlar yüklenirken bir hata oluştu.", "An error occurred while loading settings.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void AddBankAccount()
+    {
+        settings.BankAccounts.Add(new BankAccount
+        {
+            AccountName = $"{L.T("Banka Hesabı", "Bank Account")} {settings.BankAccounts.Count + 1}"
+        });
+        saved = false;
+        errorMessage = "";
+    }
+
+    private void AddCreditCard()
+    {
+        settings.CreditCards.Add(new CreditCard
+        {
+            CardName = $"{L.T("Kredi Kartı", "Credit Card")} {settings.CreditCards.Count + 1}"
+        });
+        saved = false;
+        errorMessage = "";
+    }
+
+    private async Task RemoveBankAccount(Guid accountId)
+    {
+        await Finance.InitializeAsync();
+
+        if (settings.BankAccounts.Count <= 1)
+        {
+            errorMessage = L.T("En az bir banka hesabı bulunmalıdır.", "At least one bank account is required.");
+            return;
+        }
+
+        if (Finance.Transactions.Any(x => x.BankAccountId == accountId))
+        {
+            errorMessage = L.T("Bu hesaba bağlı işlemler var. Önce bu işlemleri başka hesaba taşımalısın.", "This account has linked transactions. Move them to another account before removing it.");
+            return;
+        }
+
+        settings.BankAccounts.RemoveAll(x => x.Id == accountId);
+        saved = false;
+        errorMessage = "";
+    }
+
+    private async Task RemoveCreditCard(Guid cardId)
+    {
+        await Finance.InitializeAsync();
+
+        if (settings.CreditCards.Count <= 1)
+        {
+            errorMessage = L.T("En az bir kredi kartı bulunmalıdır.", "At least one credit card is required.");
+            return;
+        }
+
+        if (Finance.Transactions.Any(x => x.CreditCardId == cardId))
+        {
+            errorMessage = L.T("Bu karta bağlı işlemler var. Önce bu işlemleri başka karta taşımalısın.", "This card has linked transactions. Move them to another card before removing it.");
+            return;
+        }
+
+        settings.CreditCards.RemoveAll(x => x.Id == cardId);
+        saved = false;
+        errorMessage = "";
+    }
+
+    private async Task CreateBackupAsync()
+    {
+        backupMessage = "";
+        backupError = "";
+        isBackupBusy = true;
+
+        try
+        {
+            string? validationError = ValidateBackupSettings();
+            if (validationError is not null)
+            {
+                backupError = validationError;
+                return;
+            }
+
+            // Formdaki en güncel hesap ve kart bilgilerini yedeğe dahil et.
+            FinanceService.SyncLegacySummary(settings);
+            await Storage.SaveAsync("finance-settings", settings);
+            Finance.Configure(settings);
+            await Finance.InitializeAsync();
+            await Storage.SaveAsync("finance-transactions", Finance.Transactions.ToList());
+
+            string backupJson = await Storage.ExportBackupAsync();
+            string fileName = $"Finansim-Yedek-{DateTime.Now:yyyyMMdd-HHmmss}.json";
+            await Storage.DownloadBackupAsync(backupJson, fileName);
+
+            backupMessage = L.T("Yedek başarıyla oluşturuldu ve indirme başlatıldı.", "The backup was created successfully and the download has started.");
+            pendingBackupData = null;
+            pendingBackupSettings = null;
+        }
+        catch (Exception ex)
+        {
+            backupError = L.T($"Yedek oluşturulamadı: {ex.Message}", $"Could not create the backup: {ex.Message}");
+        }
+        finally
+        {
+            isBackupBusy = false;
+        }
+    }
+
+    private string? ValidateBackupSettings()
+    {
+        if (settings.BankAccounts.Count == 0 || settings.CreditCards.Count == 0)
+            return L.T("Yedek oluşturmadan önce en az bir banka hesabı ve bir kredi kartı bulunmalı.", "Add at least one bank account and one credit card before creating a backup.");
+
+        if (settings.BankAccounts.Any(x => string.IsNullOrWhiteSpace(x.AccountName) || x.InitialBalance < 0 || x.MinimumBalance < 0))
+            return L.T("Yedek oluşturmadan önce banka hesabı adlarını ve bakiye bilgilerini kontrol et.", "Check the bank account names and balance details before creating a backup.");
+
+        if (settings.BankAccounts.Select(x => x.Id).Distinct().Count() != settings.BankAccounts.Count)
+            return L.T("Banka hesaplarında yinelenen kayıt kimliği var. Önce hesap bilgilerini düzelt.", "Duplicate bank account IDs were found. Correct the account details first.");
+
+        if (settings.CreditCards.Any(x => string.IsNullOrWhiteSpace(x.CardName) || x.TotalLimit < 0 || x.InitialDebt < 0 || x.InitialDebt > x.TotalLimit))
+            return L.T("Yedek oluşturmadan önce kredi kartı adlarını, limitlerini ve borçlarını kontrol et.", "Check the credit card names, limits, and debts before creating a backup.");
+
+        if (settings.CreditCards.Select(x => x.Id).Distinct().Count() != settings.CreditCards.Count)
+            return L.T("Kredi kartlarında yinelenen kayıt kimliği var. Önce kart bilgilerini düzelt.", "Duplicate credit card IDs were found. Correct the card details first.");
+
+        foreach (var card in settings.CreditCards)
+        {
+            if (card.StatementDate.HasValue != card.PaymentDate.HasValue)
+                return L.T($"{card.CardName}: Hesap kesim ve son ödeme tarihlerini birlikte gir veya ikisini de boş bırak.", $"{card.CardName}: Enter both the statement date and payment due date, or leave both empty.");
+
+            if (card.StatementDate.HasValue && card.PaymentDate.HasValue &&
+                card.PaymentDate.Value.Date <= card.StatementDate.Value.Date)
+                return L.T($"{card.CardName}: Son ödeme tarihi hesap kesim tarihinden sonra olmalı.", $"{card.CardName}: The payment due date must be after the statement date.");
+        }
+
+        if (settings.CurrentSavings < 0 || settings.SavingsTarget < 0)
+            return L.T("Birikim tutarları negatif olamaz.", "Savings amounts cannot be negative.");
+
+        return null;
+    }
+
+    private async Task OnBackupFileSelected(InputFileChangeEventArgs args)
+    {
+        backupMessage = "";
+        backupError = "";
+        pendingBackupData = null;
+        pendingBackupSettings = null;
+
+        var file = args.File;
+        if (!string.Equals(Path.GetExtension(file.Name), ".json", StringComparison.OrdinalIgnoreCase))
+        {
+            backupError = L.T("Lütfen Finansım JSON yedek dosyasını seç.", "Please select a Finansim JSON backup file.");
+            return;
+        }
+
+        if (file.Size <= 0 || file.Size > MaxBackupFileSize)
+        {
+            backupError = L.T("Yedek dosyası boş veya 10 MB sınırından büyük.", "The backup file is empty or exceeds the 10 MB limit.");
+            return;
+        }
+
+        isBackupBusy = true;
+        try
+        {
+            await using var stream = file.OpenReadStream(MaxBackupFileSize);
+            using var reader = new StreamReader(stream);
+            string json = await reader.ReadToEndAsync();
+
+            using var document = JsonDocument.Parse(json);
+            var root = document.RootElement;
+
+            if (root.ValueKind != JsonValueKind.Object ||
+                !root.TryGetProperty("application", out var applicationElement) ||
+                applicationElement.GetString() != "Finansim")
+            {
+                throw new InvalidOperationException(L.T("Bu dosya Finansım yedeği olarak tanınmadı.", "This file was not recognized as a Finansim backup."));
+            }
+
+            if (!root.TryGetProperty("backupVersion", out var versionElement) ||
+                !versionElement.TryGetInt32(out int version) || version != 1)
+            {
+                throw new InvalidOperationException(L.T("Yedek dosyasının sürümü desteklenmiyor.", "This backup version is not supported."));
+            }
+
+            if (!root.TryGetProperty("data", out var dataElement) || dataElement.ValueKind != JsonValueKind.Object)
+                throw new InvalidOperationException(L.T("Yedek dosyasında veri bölümü bulunamadı.", "The backup does not contain a data section."));
+
+            if (!dataElement.TryGetProperty("finance-settings", out var settingsElement) ||
+                settingsElement.ValueKind != JsonValueKind.Object)
+                throw new InvalidOperationException(L.T("Yedekte finansal ayarlar bulunamadı.", "Financial settings were not found in the backup."));
+
+            if (!dataElement.TryGetProperty("finance-transactions", out var transactionsElement) ||
+                transactionsElement.ValueKind != JsonValueKind.Array)
+                throw new InvalidOperationException(L.T("Yedekte işlem listesi bulunamadı veya bozuk.", "The transaction list is missing or invalid in the backup."));
+
+            var importedSettings = settingsElement.Deserialize<FinanceSettings>(BackupJsonOptions)
+                ?? throw new InvalidOperationException(L.T("Finansal ayarlar okunamadı.", "Financial settings could not be read."));
+            var importedTransactions = transactionsElement.Deserialize<List<Transaction>>(BackupJsonOptions)
+                ?? throw new InvalidOperationException(L.T("İşlem listesi okunamadı.", "The transaction list could not be read."));
+
+            FinanceService.NormalizeSettings(importedSettings);
+
+            if (importedSettings.BankAccounts.Count == 0 || importedSettings.CreditCards.Count == 0)
+                throw new InvalidOperationException(L.T("Yedekte banka hesabı veya kredi kartı bulunmuyor.", "The backup does not contain a bank account or credit card."));
+
+            if (importedSettings.BankAccounts.Any(x => x.InitialBalance < 0 || x.MinimumBalance < 0))
+                throw new InvalidOperationException(L.T("Yedekte negatif banka bakiyesi veya minimum bakiye var.", "The backup contains a negative bank balance or minimum balance."));
+
+            if (importedSettings.CreditCards.Any(x => x.TotalLimit < 0 || x.InitialDebt < 0 || x.InitialDebt > x.TotalLimit))
+                throw new InvalidOperationException(L.T("Yedekte geçersiz kredi kartı limiti veya borcu var.", "The backup contains an invalid credit card limit or debt."));
+
+            if (importedSettings.CurrentSavings < 0 || importedSettings.SavingsTarget < 0)
+                throw new InvalidOperationException(L.T("Yedekte negatif birikim tutarı var.", "The backup contains a negative savings amount."));
+
+            if (importedTransactions.Any(x => x.Amount <= 0 || string.IsNullOrWhiteSpace(x.Description) ||
+                !Enum.IsDefined(typeof(TransactionType), x.Type) || !Enum.IsDefined(typeof(PaymentMethod), x.PaymentMethod)))
+                throw new InvalidOperationException(L.T("Yedekte geçersiz tutara, açıklamaya veya işlem türüne sahip kayıt var.", "The backup contains a transaction with an invalid amount, description, or type."));
+
+            var importedBankIds = importedSettings.BankAccounts.Select(x => x.Id).ToHashSet();
+            var importedCardIds = importedSettings.CreditCards.Select(x => x.Id).ToHashSet();
+            if (importedTransactions.Any(x => x.BankAccountId.HasValue && !importedBankIds.Contains(x.BankAccountId.Value) ||
+                                              x.CreditCardId.HasValue && !importedCardIds.Contains(x.CreditCardId.Value)))
+                throw new InvalidOperationException(L.T("Bazı işlemler yedekte bulunmayan bir banka hesabına veya karta bağlı.", "Some transactions refer to a bank account or card that is missing from the backup."));
+
+            if (importedSettings.BankAccounts.Select(x => x.Id).Distinct().Count() != importedSettings.BankAccounts.Count ||
+                importedSettings.CreditCards.Select(x => x.Id).Distinct().Count() != importedSettings.CreditCards.Count)
+                throw new InvalidOperationException(L.T("Yedekte yinelenen hesap veya kart kimliği bulundu.", "Duplicate account or card IDs were found in the backup."));
+
+            var rawData = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var property in dataElement.EnumerateObject())
+                rawData[property.Name] = property.Value.GetRawText();
+
+            pendingBackupData = rawData;
+            pendingBackupSettings = importedSettings;
+            pendingBackupFileName = file.Name;
+            pendingBackupDate = root.TryGetProperty("exportedAt", out var exportedAtElement) &&
+                                exportedAtElement.ValueKind == JsonValueKind.String
+                ? exportedAtElement.GetDateTime().ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                : null;
+            pendingBankCount = importedSettings.BankAccounts.Count;
+            pendingCardCount = importedSettings.CreditCards.Count;
+            pendingTransactionCount = importedTransactions.Count;
+
+            backupMessage = L.T("Dosya kontrol edildi. Geri yüklemek için aşağıdaki onay düğmesini kullan.", "The file has been validated. Use the confirmation button below to restore it.");
+        }
+        catch (Exception ex)
+        {
+            backupError = L.T($"Yedek dosyası okunamadı: {ex.Message}", $"Could not read the backup file: {ex.Message}");
+        }
+        finally
+        {
+            isBackupBusy = false;
+        }
+    }
+
+    private async Task RestoreBackupAsync()
+    {
+        if (pendingBackupData is null || pendingBackupSettings is null)
+            return;
+
+        backupMessage = "";
+        backupError = "";
+        isBackupBusy = true;
+
+        try
+        {
+            await Storage.ImportBackupAsync(pendingBackupData);
+
+            settings = pendingBackupSettings;
+            await Finance.ReloadAsync(settings);
+
+            saved = false;
+            errorMessage = "";
+            backupMessage = L.T("Yedek başarıyla geri yüklendi. Hesapların, kartların ve işlemlerin yenilendi.", "The backup was restored successfully. Your accounts, cards, and transactions have been updated.");
+            CancelRestore();
+        }
+        catch (Exception ex)
+        {
+            backupError = L.T($"Yedek geri yüklenemedi: {ex.Message}", $"Could not restore the backup: {ex.Message}");
+        }
+        finally
+        {
+            isBackupBusy = false;
+        }
+    }
+
+    private void CancelRestore()
+    {
+        pendingBackupData = null;
+        pendingBackupSettings = null;
+        pendingBackupFileName = "";
+        pendingBackupDate = null;
+        pendingBankCount = 0;
+        pendingCardCount = 0;
+        pendingTransactionCount = 0;
+    }
+
+    private async Task SaveSettings(EditContext editContext)
+    {
+        saved = false;
+        errorMessage = "";
+
+        if (settings.BankAccounts.Count == 0 || settings.CreditCards.Count == 0)
+        {
+            errorMessage = L.T("En az bir banka hesabı ve bir kredi kartı bulunmalıdır.", "At least one bank account and one credit card are required.");
+            return;
+        }
+
+        foreach (var account in settings.BankAccounts)
+        {
+            account.AccountName = account.AccountName?.Trim() ?? "";
+            if (string.IsNullOrWhiteSpace(account.AccountName))
+            {
+                errorMessage = L.T("Banka hesabı adı boş bırakılamaz.", "Bank account name cannot be empty.");
+                return;
+            }
+
+            if (account.InitialBalance < 0 || account.MinimumBalance < 0)
+            {
+                errorMessage = L.T("Banka bakiyesi ve minimum bakiye negatif olamaz.", "Bank balance and minimum balance cannot be negative.");
+                return;
+            }
+        }
+
+        foreach (var card in settings.CreditCards)
+        {
+            card.CardName = card.CardName?.Trim() ?? "";
+            if (string.IsNullOrWhiteSpace(card.CardName))
+            {
+                errorMessage = L.T("Kredi kartı adı boş bırakılamaz.", "Credit card name cannot be empty.");
+                return;
+            }
+
+            if (card.TotalLimit < 0 || card.InitialDebt < 0)
+            {
+                errorMessage = L.T("Kart limiti ve kart borcu negatif olamaz.", "Card limit and card debt cannot be negative.");
+                return;
+            }
+
+            if (card.InitialDebt > card.TotalLimit)
+            {
+                errorMessage = L.T($"{card.CardName}: Kart borcu toplam kart limitinden büyük olamaz.", $"{card.CardName}: Card debt cannot exceed the total card limit.");
+                return;
+            }
+
+            if (card.StatementDate.HasValue != card.PaymentDate.HasValue)
+            {
+                errorMessage = L.T($"{card.CardName}: Hesap kesim ve son ödeme tarihlerini birlikte gir veya ikisini de boş bırak.", $"{card.CardName}: Enter both the statement date and payment due date, or leave both empty.");
+                return;
+            }
+
+            if (card.StatementDate.HasValue && card.PaymentDate.HasValue &&
+                card.PaymentDate.Value.Date <= card.StatementDate.Value.Date)
+            {
+                errorMessage = L.T($"{card.CardName}: Son ödeme tarihi hesap kesim tarihinden sonra olmalıdır.", $"{card.CardName}: The payment due date must be after the statement date.");
+                return;
+            }
+
+            card.StatementDay = card.StatementDate?.Day ?? 0;
+            card.PaymentDay = card.PaymentDate?.Day ?? 0;
+        }
+
+        if (settings.CurrentSavings < 0 || settings.SavingsTarget < 0)
+        {
+            errorMessage = L.T("Birikim tutarları negatif olamaz.", "Savings amounts cannot be negative.");
+            return;
+        }
+
+        FinanceService.SyncLegacySummary(settings);
+
+        try
+        {
+            await Storage.SaveAsync("finance-settings", settings);
+            Finance.Configure(settings);
+            saved = true;
+        }
+        catch
+        {
+            errorMessage = L.T("Kaydetme başarısız oldu. Tekrar dene.", "Could not save your changes. Please try again.");
+        }
+    }
+}

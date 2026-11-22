@@ -1,0 +1,289 @@
+.transactions-page {
+    max-width: 1100px;
+    margin: auto;
+    padding: 30px;
+    color: #f1f3f5;
+}
+
+.transactions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.transactions-header h1 {
+    font-size: 32px;
+    margin-top: 15px;
+}
+
+.transactions-header h1 span {
+    color: #35c979;
+}
+
+.transactions-header p {
+    color: #858d98;
+}
+
+.back-link {
+    color: #35c979;
+    text-decoration: none;
+}
+
+.transaction-form-card,
+.transaction-list-card {
+    background: #1c2024;
+    border: 1px solid #2b3035;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.transaction-form-card h2,
+.transaction-list-card h2 {
+    font-size: 20px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #b7c0ca;
+    margin-bottom: 9px;
+}
+
+.transactions-page .form-group ::deep input,
+.transactions-page .form-group ::deep select {
+    width: 100%;
+    background: #090a0b;
+    color: #f1f3f5;
+    border: 1px solid #2b3035;
+    border-radius: 9px;
+    padding: 13px;
+    box-sizing: border-box;
+}
+
+.transactions-page .form-group ::deep input:focus,
+.transactions-page .form-group ::deep select:focus {
+    outline: none;
+    border-color: #35c979;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.save-button {
+    background: #35c979;
+    color: #090a0b;
+    border: none;
+    border-radius: 9px;
+    padding: 13px 22px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cancel-button,
+.edit-button {
+    background: #2b3035;
+    color: #f1f3f5;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.transaction-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+    padding: 18px 0;
+    border-bottom: 1px solid #2b3035;
+}
+
+.transaction-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+}
+
+.transaction-details span,
+.transaction-details small {
+    color: #858d98;
+}
+
+.positive {
+    color: #35c979;
+}
+
+.negative {
+    color: #ff5555;
+}
+
+.row-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.delete-button {
+    background: rgba(255, 85, 85, 0.12);
+    color: #ff5555;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.empty-message {
+    color: #858d98;
+    padding: 20px 0;
+}
+
+.error-message {
+    color: #ff5555;
+    margin-bottom: 15px;
+}
+
+.success-message {
+    color: #35c979;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 650px) {
+    .transactions-page {
+        padding: 16px;
+    }
+
+    .transaction-row {
+        flex-wrap: wrap;
+    }
+
+    .row-buttons {
+        width: 100%;
+    }
+}
+.transactions-header svg {
+    vertical-align: middle;
+    margin-right: 5px;
+    flex-shrink: 0;
+}
+
+.back-link,
+.settings-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+/* İşlem filtreleri */
+
+.transaction-filters {
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) repeat(3, minmax(140px, 1fr)) auto;
+    gap: 14px;
+    align-items: end;
+    margin: 20px 0 25px;
+}
+
+.transaction-filters > div {
+    min-width: 0;
+}
+
+.transaction-filters label {
+    display: block;
+    color: #b7c0ca;
+    margin-bottom: 9px;
+    font-size: 14px;
+}
+
+.transaction-filters input,
+.transaction-filters select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    background: #090a0b;
+    color: #f1f3f5;
+    border: 1px solid #2b3035;
+    border-radius: 9px;
+    padding: 12px;
+    font: inherit;
+    color-scheme: dark;
+}
+
+.transaction-filters input:focus,
+.transaction-filters select:focus {
+    outline: none;
+    border-color: #35c979;
+}
+
+.clear-filters-button {
+    background: #2b3035;
+    color: #f1f3f5;
+    border: 1px solid #3a4148;
+    border-radius: 9px;
+    padding: 12px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
+
+.clear-filters-button:hover {
+    background: #394149;
+}
+
+@media (max-width: 950px) {
+    .transaction-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .transaction-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .clear-filters-button {
+        width: 100%;
+    }
+}/* Tarih filtrelerinin koyu tema tasarımı */
+
+.transaction-filters .filter-date ::deep input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    background-color: #090a0b;
+    color: #f1f3f5;
+    border: 1px solid #2b3035;
+    border-radius: 9px;
+    padding: 12px;
+    font: inherit;
+    color-scheme: dark;
+}
+
+.transaction-filters .filter-date ::deep input:focus {
+    outline: none;
+    border-color: #35c979;
+}
+
+.transaction-filters .filter-date ::deep input:hover {
+    border-color: #438dff;
+}
+.settings-button {
+    text-decoration: none;
+}
+.transactions-header a.settings-button,
+.transactions-header a.settings-button:hover,
+.transactions-header a.settings-button:focus,
+.transactions-header a.settings-button:visited {
+    text-decoration: none !important;
+    border-bottom: none !important;
+}
+/* İşlemler yazısının eski yeşil rengi */
+.transaction-nav-button span {
+    color: #35c979 !important;
+}

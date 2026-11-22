@@ -1,0 +1,589 @@
+.settings-page {
+    max-width: 850px;
+    margin: auto;
+    padding: 35px;
+    color: #f1f3f5;
+    min-height: 100vh;
+}
+
+.settings-header {
+    margin-bottom: 30px;
+}
+
+.back-link {
+    color: #35c979;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.settings-header h1 {
+    font-size: 30px;
+    margin-top: 25px;
+}
+
+.settings-header p {
+    color: #858d98;
+}
+
+.settings-section {
+    background: #191c1f;
+    border: 1px solid #2b3035;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.settings-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.settings-title > span {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.settings-title h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.settings-title p {
+    color: #858d98;
+    font-size: 12px;
+    margin: 5px 0 0;
+}
+
+.bank-title {
+    color: #f39b45;
+}
+
+.card-title {
+    color: #438dff;
+}
+
+.savings-title {
+    color: #a879f5;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 20px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    color: #aab1ba;
+    font-size: 13px;
+}
+
+.form-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #101214;
+    border: 1px solid #343a40;
+    border-radius: 9px;
+    padding: 14px;
+    color: white;
+    font-size: 15px;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: #35c979;
+}
+
+.save-button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    background: #35c979;
+    color: #08140d;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.save-button:hover {
+    background: #28ad65;
+}
+
+.success-message {
+    background: #173b29;
+    color: #35c979;
+    padding: 15px;
+    border-radius: 9px;
+    margin-bottom: 18px;
+}
+
+.error-message {
+    background: #401c20;
+    color: #ff5555;
+    padding: 15px;
+    border-radius: 9px;
+    margin-bottom: 18px;
+}
+
+.loading {
+    color: #858d98;
+}
+
+@media (max-width: 600px) {
+    .settings-page {
+        padding: 20px 15px;
+    }
+
+    .settings-section {
+        padding: 18px;
+    }
+
+    .settings-header h1 {
+        font-size: 25px;
+    }
+}
+/* Finansim koyu tema form alanları */
+
+.form-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #090a0b !important;
+    color: #f1f3f5 !important;
+    border: 1px solid #2b3035;
+    border-radius: 9px;
+    padding: 13px 15px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: #35c979;
+    box-shadow: 0 0 0 2px rgba(53, 201, 121, 0.12);
+}
+
+.form-input:hover {
+    border-color: #858d98;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: #b7c0ca;
+}
+
+.save-button {
+    background: #35c979;
+    color: #090a0b;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.save-button:hover {
+    background: #28ad65;
+    transform: translateY(-2px);
+}
+.settings-page input.form-input {
+    background-color: #090a0b !important;
+    color: #f1f3f5 !important;
+    border: 1px solid #2b3035 !important;
+    border-radius: 9px !important;
+    padding: 13px 15px !important;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+    outline: none;
+}
+
+.settings-page input.form-input:focus {
+    border-color: #35c979 !important;
+    box-shadow: 0 0 0 2px rgba(53, 201, 121, 0.12);
+}
+
+.settings-page input.form-input:hover {
+    border-color: #858d98 !important;
+}.settings-page ::deep input.form-input {
+    background: #090a0b !important;
+    color: #f1f3f5 !important;
+    border: 1px solid #2b3035 !important;
+    border-radius: 9px !important;
+    padding: 13px 15px !important;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.settings-page ::deep input.form-input:focus {
+    border-color: #35c979 !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(53, 201, 121, 0.12);
+}
+
+
+/* Çoklu banka hesabı ve kredi kartı düzenleyicileri */
+.settings-item {
+    background: #121619;
+    border: 1px solid #2b3035;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+.settings-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.settings-item-header h3 {
+    margin: 0;
+    color: #f1f3f5;
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
+}
+
+.settings-grid .form-group {
+    min-width: 0;
+}
+
+.add-item-button,
+.remove-item-button {
+    border: 1px solid #343a40;
+    border-radius: 9px;
+    padding: 11px 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.add-item-button {
+    width: 100%;
+    background: #18251e;
+    color: #35c979;
+    border-color: #28533b;
+}
+
+.add-item-button:hover {
+    background: #20372a;
+    border-color: #35c979;
+}
+
+.card-add-button {
+    color: #438dff;
+    background: #172231;
+    border-color: #294a77;
+}
+
+.card-add-button:hover {
+    background: #1d3049;
+    border-color: #438dff;
+}
+
+.remove-item-button {
+    flex-shrink: 0;
+    background: rgba(255, 85, 85, 0.10);
+    color: #ff7777;
+    border-color: rgba(255, 85, 85, 0.25);
+    font-size: 12px;
+}
+
+.remove-item-button:hover:not(:disabled) {
+    background: rgba(255, 85, 85, 0.18);
+    border-color: #ff5555;
+}
+
+.remove-item-button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .settings-item {
+        padding: 14px;
+    }
+
+    .settings-item-header {
+        align-items: flex-start;
+    }
+}
+
+
+.settings-current-value {
+    display: block;
+    color: #858d98;
+    font-size: 12px;
+    margin-top: 5px;
+}
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #35c979;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.back-link:hover,
+.back-link:visited,
+.back-link:focus {
+    color: #35c979;
+    text-decoration: none;
+}
+/* Veri yedekleme alanı */
+.backup-title {
+    color: #35c979;
+}
+
+.backup-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.backup-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 18px;
+    background: #121619;
+    border: 1px solid #2b3035;
+    border-radius: 12px;
+}
+
+.backup-card-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.backup-card-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.backup-download-icon {
+    color: #35c979;
+    background: rgba(53, 201, 121, 0.12);
+}
+
+.backup-restore-icon {
+    color: #438dff;
+    background: rgba(67, 141, 255, 0.12);
+}
+
+.backup-card h3 {
+    margin: 1px 0 6px;
+    color: #f1f3f5;
+    font-size: 15px;
+}
+
+.backup-card p {
+    margin: 0;
+    color: #858d98;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.backup-action-button {
+    min-height: 43px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.backup-action-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.backup-create-button {
+    color: #08140d;
+    background: #35c979;
+}
+
+.backup-create-button:hover:not(:disabled) {
+    background: #28ad65;
+}
+
+.backup-file-input {
+    width: 100%;
+    min-width: 0;
+    color: #b7c0ca;
+    font-size: 12px;
+}
+
+.settings-page ::deep .backup-file-input::file-selector-button {
+    margin-right: 10px;
+    padding: 9px 12px;
+    color: #dce8ff;
+    background: #172231;
+    border: 1px solid #294a77;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.backup-feedback {
+    margin-top: 16px;
+    padding: 13px 15px;
+    border-radius: 9px;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.backup-success {
+    color: #35c979;
+    background: #173b29;
+}
+
+.backup-error {
+    color: #ff7777;
+    background: #401c20;
+}
+
+.restore-confirmation {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 18px;
+    background: #171d23;
+    border: 1px solid #35506b;
+    border-radius: 12px;
+}
+
+.restore-confirmation strong {
+    color: #f1f3f5;
+    font-size: 15px;
+}
+
+.restore-confirmation p {
+    margin: 5px 0;
+    color: #b7c0ca;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.restore-confirmation small {
+    color: #858d98;
+    font-size: 12px;
+}
+
+.restore-warning {
+    padding: 12px;
+    color: #f5c66a;
+    background: rgba(245, 198, 106, 0.08);
+    border: 1px solid rgba(245, 198, 106, 0.2);
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.backup-confirm-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.restore-confirm-button {
+    color: #08140d;
+    background: #35c979;
+}
+
+.restore-confirm-button:hover:not(:disabled) {
+    background: #28ad65;
+}
+
+.restore-cancel-button {
+    color: #f1f3f5;
+    background: #2b3035;
+    border-color: #3a4148;
+}
+
+.restore-cancel-button:hover {
+    background: #394149;
+}
+
+@media (max-width: 650px) {
+    .backup-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .backup-card {
+        padding: 15px;
+    }
+}
+
+/* Language preference */
+.language-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.language-section .language-title {
+    margin: 0;
+}
+
+.language-section .language-title h2 {
+    margin-bottom: 6px;
+}
+
+.language-section .language-title p {
+    margin: 0;
+}
+
+.language-select {
+    width: min(100%, 230px);
+    flex: 0 0 230px;
+}
+
+@media (max-width: 600px) {
+    .language-section {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .language-select {
+        width: 100%;
+        flex-basis: auto;
+    }
+}

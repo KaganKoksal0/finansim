@@ -1,0 +1,1315 @@
+.dashboard {
+    max-width: 1250px;
+    margin: auto;
+    padding: 35px;
+    color: #f1f3f5;
+    background: #090a0b;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.header h1 {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin: 0;
+}
+
+.header h1 span {
+    color: #35c979;
+}
+
+.header p {
+    color: #858d98;
+    margin: 5px 0 0;
+}
+
+.header-date {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    gap: 5px;
+}
+
+.header-date span {
+    color: #858d98;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.header-date strong {
+    font-size: 14px;
+}
+
+.welcome {
+    background: linear-gradient(110deg, #192b25, #1c2427);
+    border: 1px solid #294337;
+    border-radius: 18px;
+    padding: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.welcome-label {
+    color: #35c979 !important;
+    font-size: 11px !important;
+    letter-spacing: 2px;
+}
+
+.welcome h2 {
+    font-size: 26px;
+    margin: 10px 0;
+}
+
+.welcome p {
+    color: #a5b2aa;
+    margin-bottom: 0;
+}
+
+.welcome-icon {
+    width: 65px;
+    height: 65px;
+    border-radius: 18px;
+    background: #254c38;
+    color: #35c979;
+    display: grid;
+    place-items: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.finance-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.finance-card {
+    background: #1c2024;
+    border: 1px solid #2b3035;
+    border-radius: 16px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #aab1ba;
+    font-size: 13px;
+}
+
+.card-icon {
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.finance-card h2 {
+    font-size: 23px;
+    margin: 25px 0 5px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.finance-card p {
+    color: #858d98;
+    font-size: 12px;
+}
+
+.card-footer {
+    border-top: 1px solid #30353a;
+    padding-top: 13px;
+    margin-top: 18px;
+    font-size: 11px;
+    color: #929aa4;
+}
+
+.bank-card h2,
+.bank-card .card-icon,
+.bank-card .card-footer span {
+    color: #f39b45;
+}
+
+.credit-card h2,
+.credit-card .card-icon,
+.credit-card .card-footer span {
+    color: #438dff;
+}
+
+.income-card h2,
+.income-card .card-icon {
+    color: #35c979;
+}
+
+.expense-card h2,
+.expense-card .card-icon {
+    color: #ff5555;
+}
+
+.section {
+    margin-top: 38px;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 17px;
+}
+
+.section-title h3 {
+    font-size: 19px;
+    margin: 0;
+}
+
+.section-title p {
+    color: #858d98;
+    font-size: 12px;
+    margin: 5px 0 0;
+}
+.budget-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.savings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.budget-card,
+.savings-card {
+    background: #1c2024;
+    border: 1px solid #2b3035;
+    border-radius: 16px;
+    padding: 23px;
+}
+
+.budget-icon {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.budget-card p,
+.savings-card p {
+    color: #aab1ba;
+    font-size: 13px;
+}
+
+.budget-card h2,
+.savings-card h2 {
+    font-size: 27px;
+    margin: 12px 0;
+}
+
+.budget-card span {
+    font-size: 11px;
+    color: #858d98;
+}
+
+.daily-card h2,
+.daily-card .budget-icon {
+    color: #b99575;
+}
+
+.remaining-card h2,
+.remaining-card .budget-icon {
+    color: #45c6c8;
+}
+.spendable-card {
+    border-color: rgba(53, 201, 121, 0.35);
+}
+
+.spendable-card h2,
+.spendable-card .budget-icon {
+    color: #35c979;
+}
+.savings-heading {
+    display: flex;
+    justify-content: space-between;
+    color: #aab1ba;
+    font-size: 13px;
+}
+
+.savings-icon {
+    font-size: 22px;
+}
+
+.yellow,
+.savings-card:first-child h2 {
+    color: #f5d547;
+}
+
+.purple,
+.savings-card:last-child h2 {
+    color: #a879f5;
+}
+
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #30353a;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-value {
+    width: 25%;
+    height: 100%;
+    background: #a879f5;
+    border-radius: 10px;
+}
+
+.transactions {
+    background: #1c2024;
+    border: 1px solid #2b3035;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.transaction {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 22px;
+    border-bottom: 1px solid #30353a;
+}
+
+.transaction:last-child {
+    border-bottom: none;
+}
+
+.transaction-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: #292e33;
+    font-size: 19px;
+}
+
+.transaction-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+}
+
+.transaction-info strong {
+    font-size: 13px;
+}
+
+.transaction-info span {
+    font-size: 11px;
+    color: #858d98;
+}
+
+.negative {
+    color: #ff5555;
+    font-size: 13px;
+}
+
+.positive {
+    color: #35c979;
+    font-size: 13px;
+}
+
+.view-all {
+    background: transparent;
+    color: #35c979;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+footer {
+    text-align: center;
+    color: #626b75;
+    font-size: 11px;
+    padding: 40px 0 10px;
+}
+
+footer span {
+    color: #35c979;
+    font-weight: bold;
+}
+
+@media (max-width: 950px) {
+    .finance-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .budget-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard {
+        padding: 20px 15px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .finance-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .finance-card {
+        padding: 15px;
+    }
+
+    .finance-card h2 {
+        font-size: 18px;
+        margin-top: 20px;
+    }
+
+    .card-heading {
+        font-size: 11px;
+    }
+
+    .budget-grid,
+    .savings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome {
+        padding: 20px;
+    }
+
+    .welcome h2 {
+        font-size: 22px;
+    }
+
+    .transaction {
+        padding: 15px 12px;
+    }
+
+    .transaction-info strong,
+    .negative,
+    .positive {
+        font-size: 11px;
+    }
+}
+.settings-button {
+    background: #1c2024;
+    border: 1px solid #35c979;
+    color: #35c979;
+    padding: 10px 18px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.settings-button:hover {
+    background: #35c979;
+    color: #090a0b;
+}.header-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.header-actions .settings-button {
+    display: inline-block;
+}
+/* FINANSAL ÖZET */
+.financial-summary {
+    background: linear-gradient(115deg, #192b25, #1c2427);
+    border: 1px solid #294337;
+    border-radius: 18px;
+    padding: 30px;
+    margin-bottom: 25px;
+}
+
+.financial-summary-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 28px;
+}
+
+.summary-eyebrow {
+    color: #35c979;
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+
+.financial-summary-main h2 {
+    font-size: 27px;
+    margin: 0 0 8px;
+}
+
+.summary-caption {
+    color: #a5b2aa;
+    font-size: 13px;
+}
+
+.summary-net {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.summary-net > span {
+    color: #a5b2aa;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+}
+
+.summary-net strong {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.summary-net .positive {
+    color: #35c979;
+}
+
+.summary-net .negative {
+    color: #ff5555;
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.summary-stat {
+    background: rgba(9, 10, 11, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.summary-stat span {
+    color: #aab1ba;
+    font-size: 12px;
+}
+
+.summary-stat strong {
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.summary-stat.income strong {
+    color: #35c979;
+}
+
+.summary-stat.expense strong {
+    color: #ff5555;
+}
+
+.summary-stat.daily strong {
+    color: #f39b45;
+}
+
+/* MOBİL UYUM */
+@media (max-width: 600px) {
+    .financial-summary {
+        padding: 20px;
+    }
+
+    .financial-summary-main {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .summary-net {
+        text-align: left;
+    }
+
+    .summary-stats {
+        grid-template-columns: 1fr;
+    }
+}
+.card-icon-svg {
+    width: 25px;
+    height: 25px;
+    display: block;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.budget-icon-svg {
+    width: 34px;
+    height: 34px;
+    display: block;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.savings-icon-svg {
+    width: 40px;
+    height: 40px;
+    display: block;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+/* SON İŞLEMLER - GELİR VE GİDER RENKLERİ */
+
+.transaction-icon.income {
+    color: #35c979;
+    background: rgba(53, 201, 121, 0.12);
+    border: 1px solid rgba(53, 201, 121, 0.2);
+}
+
+.transaction-icon.expense {
+    color: #ff5555;
+    background: rgba(255, 85, 85, 0.12);
+    border: 1px solid rgba(255, 85, 85, 0.2);
+}
+/* GELİR - KOYU YEŞİL */
+.transaction.transaction-income {
+    background-color: #142e23;
+    border-bottom: 1px solid #24543b;
+    transition: background-color 0.2s ease;
+}
+
+/* GİDER - KOYU KIRMIZI */
+.transaction.transaction-expense {
+    background-color: #351d22;
+    border-bottom: 1px solid #643039;
+    transition: background-color 0.2s ease;
+}
+
+/* HOVER */
+.transaction.transaction-income:hover {
+    background-color: #193c2b;
+}
+
+.transaction.transaction-expense:hover {
+    background-color: #47232a;
+}
+/* AYLIK GELİR-GİDER DENGESİ */
+.monthly-balance-breakdown {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(9, 10, 11, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 13px;
+}
+
+.monthly-balance-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.monthly-balance-heading h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.monthly-balance-heading span {
+    color: #858d98;
+    font-size: 12px;
+}
+
+.monthly-flow-row {
+    margin-bottom: 17px;
+}
+
+.monthly-flow-row:last-child {
+    margin-bottom: 0;
+}
+
+.monthly-flow-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 9px;
+    font-size: 13px;
+}
+
+.monthly-flow-track {
+    height: 9px;
+    background: #30353a;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.monthly-flow-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.income-fill {
+    background: #249b61;
+}
+
+.expense-fill {
+    background: #b83b45;
+}
+/* AYLIK GELİR-GİDER DENGESİ */
+
+.monthly-balance-breakdown {
+    margin-top: 25px;
+    padding: 22px;
+    background: rgba(9, 10, 11, 0.28);
+    border: 1px solid #2b3c35;
+    border-radius: 14px;
+}
+
+.monthly-balance-heading {
+    margin-bottom: 22px;
+}
+
+.monthly-balance-heading h3 {
+    color: #f1f3f5;
+    font-size: 16px;
+    font-weight: 650;
+    margin: 0;
+}
+
+.monthly-flow-row {
+    margin-bottom: 20px;
+}
+
+.monthly-flow-row:last-child {
+    margin-bottom: 0;
+}
+
+.monthly-flow-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.monthly-flow-track {
+    height: 11px;
+    width: 100%;
+    background: #30353a;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.monthly-flow-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.income-fill {
+    background: #249b61;
+}
+
+.expense-fill {
+    background: #b83b45;
+}
+
+@media (max-width: 600px) {
+    .monthly-balance-breakdown {
+        padding: 16px;
+    }
+}
+
+
+/* ANA SAYFA - TEK TEK BANKA HESABI VE KREDI KARTI GORUNUMU */
+.home-account-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.home-account-panel {
+    min-width: 0;
+    padding: 22px;
+    background: #1c2024;
+    border: 1px solid #2b3035;
+    border-radius: 16px;
+}
+
+.home-account-panel-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #30353a;
+}
+
+.home-account-panel-heading h4 {
+    margin: 0 0 6px;
+    color: #f1f3f5;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.home-account-panel-heading > div:first-child > span {
+    color: #858d98;
+    font-size: 11px;
+}
+
+.home-account-total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    text-align: right;
+    min-width: 0;
+}
+
+.home-account-total strong {
+    font-size: 16px;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+.home-account-total small,
+.home-account-value small {
+    color: #858d98;
+    font-size: 10px;
+}
+
+.bank-total strong,
+.bank-account-value strong {
+    color: #f39b45;
+}
+
+.card-total strong {
+    color: #ff8b91;
+}
+
+.home-account-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.home-account-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 13px;
+    background: #090a0b;
+    border: 1px solid #2b3035;
+    border-radius: 12px;
+}
+
+.home-account-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+}
+
+.home-account-icon svg {
+    width: 21px;
+    height: 21px;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.bank-account-icon {
+    color: #f39b45;
+    background: rgba(243, 155, 69, 0.12);
+}
+
+.credit-card-icon {
+    color: #438dff;
+    background: rgba(67, 141, 255, 0.12);
+}
+
+.home-account-details {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.home-account-details > strong {
+    overflow: hidden;
+    color: #f1f3f5;
+    font-size: 12px;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.home-account-details > span {
+    color: #858d98;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.home-account-value {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    text-align: right;
+}
+
+.home-account-value strong {
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.card-account-value strong {
+    color: #438dff;
+}
+
+.home-card-usage-track {
+    width: 100%;
+    height: 5px;
+    margin-top: 3px;
+    overflow: hidden;
+    background: #30353a;
+    border-radius: 10px;
+}
+
+.home-card-usage-fill {
+    height: 100%;
+    background: #438dff;
+    border-radius: 10px;
+    transition: width 0.25s ease;
+}
+
+@media (max-width: 800px) {
+    .home-account-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .home-account-panel {
+        padding: 16px;
+    }
+
+    .home-account-item {
+        gap: 9px;
+        padding: 11px 9px;
+    }
+
+    .home-account-icon {
+        flex-basis: 34px;
+        width: 34px;
+        height: 34px;
+    }
+
+    .home-account-details > strong {
+        font-size: 11px;
+    }
+
+    .home-account-details > span {
+        font-size: 9px;
+    }
+
+    .home-account-value strong {
+        font-size: 10px;
+    }
+
+    .home-account-total strong {
+        font-size: 14px;
+    }
+}
+
+
+/* ANA SAYFA ÜST MENÜ */
+.header-actions {
+    position: relative;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.transaction-nav-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.transaction-nav-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex: 0 0 auto;
+}
+
+.transaction-nav-button:hover .transaction-nav-icon {
+    transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+    .header-actions {
+        gap: 7px;
+    }
+
+    .header-actions .settings-button {
+        padding: 9px 11px;
+        font-size: 12px;
+    }
+
+    .transaction-nav-icon {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* TEK, ORTADAN AYRILAN GELİR-GİDER ÇUBUĞU */
+.monthly-comparison-labels {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 18px;
+    margin-bottom: 14px;
+}
+
+.monthly-comparison-label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+.monthly-comparison-income {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.monthly-comparison-label > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.monthly-comparison-label small {
+    color: #aab1ba;
+    font-size: 12px;
+}
+
+.monthly-comparison-label strong {
+    font-size: 15px;
+    overflow-wrap: anywhere;
+}
+
+.monthly-comparison-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: #b83b45;
+}
+
+.monthly-comparison-income .monthly-comparison-dot {
+    background: #249b61;
+}
+
+.monthly-comparison-track {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2px minmax(0, 1fr);
+    align-items: stretch;
+    width: 100%;
+    height: 14px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: transparent;
+}
+
+.monthly-comparison-half {
+    display: flex;
+    min-width: 0;
+    overflow: hidden;
+    background: #30353a;
+}
+
+.monthly-comparison-left {
+    justify-content: flex-end;
+    border-radius: 10px 0 0 10px;
+}
+
+.monthly-comparison-right {
+    justify-content: flex-start;
+    border-radius: 0 10px 10px 0;
+}
+
+.monthly-comparison-center {
+    background: #858d98;
+}
+
+.monthly-comparison-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.monthly-comparison-fill.expense-fill {
+    background: #b83b45;
+    border-radius: 10px 0 0 10px;
+}
+
+.monthly-comparison-fill.income-fill {
+    background: #249b61;
+    border-radius: 0 10px 10px 0;
+}
+
+.monthly-comparison-direction {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    color: #858d98;
+    font-size: 10px;
+}
+
+/* HESAP KESİMİNE KADAR HARCAMA VE BİRİKİM ÖZETİ */
+.summary-spending-plan {
+    margin-top: 16px;
+    padding: 20px;
+    background: rgba(9, 10, 11, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+}
+
+.summary-plan-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-bottom: 14px;
+}
+
+.summary-plan-heading h3 {
+    margin: 0;
+    color: #f1f3f5;
+    font-size: 15px;
+    font-weight: 650;
+}
+
+.summary-plan-heading > span {
+    color: #aab1ba;
+    font-size: 11px;
+}
+
+.summary-plan-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.summary-plan-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 112px;
+    padding: 14px;
+    background: rgba(28, 32, 36, 0.88);
+    border: 1px solid #30383c;
+    border-radius: 11px;
+}
+
+.summary-plan-card > span {
+    min-height: 30px;
+    color: #aab1ba;
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+.summary-plan-card > strong {
+    margin: 8px 0 5px;
+    color: #f1f3f5;
+    font-size: clamp(15px, 1.45vw, 20px);
+    font-weight: 750;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.summary-plan-date > strong,
+.summary-plan-daily > strong {
+    color: #f39b45;
+}
+
+.summary-plan-total > strong {
+    color: #438dff;
+}
+
+.summary-plan-savings > strong {
+    color: #f5d547;
+}
+
+.summary-plan-card > small {
+    margin-top: auto;
+    color: #858d98;
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+.summary-plan-note {
+    margin: 12px 0 0;
+    color: #858d98;
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+    .summary-plan-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .monthly-comparison-labels {
+        gap: 8px;
+    }
+
+    .monthly-comparison-label {
+        gap: 6px;
+    }
+
+    .monthly-comparison-label small {
+        font-size: 10px;
+    }
+
+    .monthly-comparison-label strong {
+        font-size: 11px;
+    }
+
+    .summary-spending-plan {
+        padding: 14px;
+    }
+
+    .summary-plan-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .summary-plan-card {
+        min-height: 108px;
+        padding: 11px;
+    }
+
+    .summary-plan-card > span {
+        font-size: 10px;
+    }
+
+    .summary-plan-card > strong {
+        font-size: 15px;
+    }
+}
+
+
+/* Dil seçimi ana sayfa altbilgisinin sağında yer alır. */
+footer.home-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    text-align: left;
+}
+
+.home-footer-copy {
+    min-width: 0;
+    color: #626b75;
+    font-size: 11px;
+}
+
+.home-footer-copy > span {
+    color: #35c979;
+    font-weight: 700;
+}
+
+.home-language-picker {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    flex: 0 0 auto;
+}
+
+.language-option {
+    border: 0;
+    border-radius: 6px;
+    padding: 6px 5px;
+    color: #858d98;
+    background: transparent;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.language-option:hover {
+    color: #f1f3f5;
+}
+
+.language-option.active {
+    color: #35c979;
+    background: #1c2024;
+}
+
+.language-divider {
+    color: #626b75;
+    font-size: 12px;
+    user-select: none;
+}
+
+@media (max-width: 600px) {
+    footer.home-footer {
+        align-items: flex-end;
+        gap: 10px;
+        padding-top: 30px;
+    }
+
+    .home-footer-copy {
+        max-width: 62%;
+        line-height: 1.5;
+    }
+
+    .home-language-picker {
+        gap: 5px;
+    }
+
+    .language-option {
+        padding: 7px 4px;
+        font-size: 11px;
+    }
+}
