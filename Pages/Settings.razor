@@ -3,12 +3,11 @@
 @using Finansim.Services
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Text.Json
-@using System.Globalization
 @inject Finansim.Services.StorageService Storage
 @inject Finansim.Services.FinanceService Finance
 @inject LocalizationService L
 
-<PageTitle>@L.T("Finansal Ayarlar - Finansim", "Financial Settings - Finansim")</PageTitle>
+<PageTitle>@L.T("Ayarlar - Finansim", "Settings - Finansim")</PageTitle>
 
 <div class="settings-page">
     <div class="settings-header">
@@ -25,7 +24,7 @@
         <path d="M12 19L5 12L12 5" />
     </svg>
     @L.T("Ana Sayfa", "Home")
-</a>        <h1>@L.T("Finansal Ayarlar", "Financial Settings")</h1>
+</a>        <h1>@L.T("Ayarlar", "Settings")</h1>
         <p>@L.T("Banka hesaplarını, kredi kartlarını ve birikim hedefini buradan yönetebilirsin.", "Manage your bank accounts, credit cards, and savings goal here.")</p>
     </div>
 
@@ -57,7 +56,7 @@
                         <div class="settings-item-header">
                             <div>
                                 <h3>@(string.IsNullOrWhiteSpace(account.AccountName) ? L.T("Banka Hesabı", "Bank Account") : account.AccountName)</h3>
-                                <span class="settings-current-value">@L.T("Güncel bakiye: ", "Current balance: ")@(Finance.GetBankBalance(account.Id).ToString("N2", DisplayCulture)) ₺</span>
+                                <span class="settings-current-value">@L.T("Güncel bakiye: ", "Current balance: ")@(Finance.GetBankBalance(account.Id).ToString("N2")) ₺</span>
                             </div>
                             <button type="button" class="remove-item-button" @onclick="() => RemoveBankAccount(account.Id)" disabled="@(settings.BankAccounts.Count <= 1)">
                                 @L.T("Hesabı Sil", "Remove Account")
@@ -107,7 +106,7 @@
                         <div class="settings-item-header">
                             <div>
                                 <h3>@(string.IsNullOrWhiteSpace(card.CardName) ? L.T("Kredi Kartı", "Credit Card") : card.CardName)</h3>
-                                <span class="settings-current-value">@L.T("Borç: ", "Debt: ")@(Finance.GetCreditCardDebt(card.Id).ToString("N2", DisplayCulture)) ₺ · @L.T("Kullanılabilir: ", "Available: ")@(Finance.GetAvailableLimit(card.Id).ToString("N2", DisplayCulture)) ₺</span>
+                                <span class="settings-current-value">@L.T("Borç: ", "Debt: ")@(Finance.GetCreditCardDebt(card.Id).ToString("N2")) ₺ · @L.T("Kullanılabilir: ", "Available: ")@(Finance.GetAvailableLimit(card.Id).ToString("N2")) ₺</span>
                             </div>
                             <button type="button" class="remove-item-button" @onclick="() => RemoveCreditCard(card.Id)" disabled="@(settings.CreditCards.Count <= 1)">
                                 @L.T("Kartı Sil", "Remove Card")
@@ -289,8 +288,6 @@
     private bool isLoading = true;
     private bool saved;
     private string errorMessage = "";
-
-    private CultureInfo DisplayCulture => CultureInfo.GetCultureInfo(L.IsEnglish ? "en-US" : "tr-TR");
 
     private bool isBackupBusy;
     private string backupMessage = "";
@@ -554,7 +551,7 @@
             pendingBackupFileName = file.Name;
             pendingBackupDate = root.TryGetProperty("exportedAt", out var exportedAtElement) &&
                                 exportedAtElement.ValueKind == JsonValueKind.String
-                ? exportedAtElement.GetDateTime().ToLocalTime().ToString("g", DisplayCulture)
+                ? exportedAtElement.GetDateTime().ToLocalTime().ToString("dd.MM.yyyy HH:mm")
                 : null;
             pendingBankCount = importedSettings.BankAccounts.Count;
             pendingCardCount = importedSettings.CreditCards.Count;
