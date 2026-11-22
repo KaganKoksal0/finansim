@@ -727,10 +727,10 @@ private int DaysUntilPayment(DateTime date)
     {
         "Yemek" => L.T("Yemek", "Food"),
         "Market" => L.T("Market", "Groceries"),
-        "Ulaşım" => L.T("Ulaşım", "Transport"),
-        "Eğlence" => L.T("Eğlence", "Entertainment"),
+        "Ulaşım" or "UlaÅŸÄ±m" => L.T("Ulaşım", "Transport"),
+        "Eğlence" or "EÄŸlence" => L.T("Eğlence", "Entertainment"),
         "Faturalar" => L.T("Faturalar", "Bills"),
-        "Diğer" => L.T("Diğer", "Other"),
+        "Diğer" or "DiÄŸer" => L.T("Diğer", "Other"),
         _ => category
     };
 

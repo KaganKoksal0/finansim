@@ -1313,7 +1313,10 @@ footer.home-footer {
         font-size: 11px;
     }
 }
+/* Keep the Transactions link green, normally spaced, and button-sized in both languages. */
 .header-date .transaction-nav-button span {
+    color: #35c979 !important;
+    font-size: inherit;
     letter-spacing: normal;
     word-spacing: normal;
 }
